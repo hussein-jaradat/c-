@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAU ATM - ATM</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <style>
+    :root {
+      --primary: #0066ff;
+      --primary-dark: #0047b3;
+      --secondary: #00e676;
+      --accent: #ff5722;
+      --dark: #1a1a2e;
+      --darker: #12121d;
+      --light: #f8f9fa;
+      --gradient: linear-gradient(135deg, #0066ff 0%, #00ccff 100%);
+      --accent-gradient: linear-gradient(135deg, #ff5722 0%, #ff9800 100%);
+      --neon-shadow: 0 0 15px rgba(0, 204, 255, 0.7);
+      --accent-shadow: 0 0 15px rgba(255, 87, 34, 0.7);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: var(--dark);
+      color: var(--light);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .atm-container {
+      max-width: 500px;
+      margin: 2rem auto;
+      background: rgba(30, 30, 46, 0.8);
+      border-radius: 25px;
+      padding: 2rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 204, 255, 0.2);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .atm-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .atm-header h1 {
+      color: var(--secondary);
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .atm-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+    }
+
+    .atm-brand {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-weight: bold;
+      color: var(--secondary);
+      font-size: 1.2rem;
+    }
+
+    .atm-screen {
+      background: linear-gradient(145deg, #1e1e2e, #252540);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 204, 255, 0.1);
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .screen-title {
+      color: var(--secondary);
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .screen-title::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 2px;
+      background: var(--secondary);
+    }
+
+    .screen-message {
+      text-align: center;
+      margin: 1rem 0;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .balance-amount {
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 1rem 0;
+      color: var(--secondary);
+      text-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
+    }
+
+    .currency-rate {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 1rem;
+      border: 1px solid rgba(0, 204, 255, 0.3);
+      transition: all 0.3s;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
+    }
+
+    .btn-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      padding: 0.8rem;
+      border-radius: 10px;
+      border: none;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: white;
+      box-shadow: 0 5px 15px rgba(0, 102, 255, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 102, 255, 0.6);
+    }
+
+    .btn-accent {
+      background: var(--accent-gradient);
+      color: white;
+      box-shadow: 0 5px 15px rgba(255, 87, 34, 0.4);
+    }
+
+    .btn-accent:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(255, 87, 34, 0.6);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+
+    .keypad-btn {
+      padding: 1rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .keypad-btn:hover {
+      background: rgba(0, 204, 255, 0.2);
+      transform: scale(1.05);
+    }
+
+    .keypad-btn:active {
+      transform: scale(0.95);
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--accent-gradient);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      display: none;
+    }
+
+    .receipt {
+      background: white;
+      color: black;
+      padding: 1rem;
+      border-radius: 5px;
+      margin-top: 1rem;
+      font-family: monospace;
+      display: none;
+    }
+
+    .receipt-line {
+      margin: 0.3rem 0;
+    }
+
+    .receipt-header {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px dashed #000;
+      padding-bottom: 0.5rem;
+    }
+
+    .receipt-footer {
+      text-align: center;
+      margin-top: 0.5rem;
+      border-top: 1px dashed #000;
+      padding-top: 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 600px) {
+      .atm-container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+      
+      .btn-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="notification" id="notification"></div>
+
+  <div class="atm-container animate__animated animate__fadeIn">
+    <div class="atm-header">
+      <div class="atm-brand">PAU </div>
+      <h1><i class="fas fa-money-bill-wave"></i> PAU ATM</h1>
+      <p>hussein , jehad , sandra </p>
+    </div>
+
+    <div class="atm-screen">
+      <div class="screen-content" id="screenContent">
+        <!-- سيتم إضافة المحتوى هنا -->
+      </div>
+    </div>
+
+    <div class="keypad" id="keypad" style="display: none;">
+      <button class="keypad-btn" onclick="appendToInput('1')">1</button>
+      <button class="keypad-btn" onclick="appendToInput('2')">2</button>
+      <button class="keypad-btn" onclick="appendToInput('3')">3</button>
+      <button class="keypad-btn" onclick="appendToInput('4')">4</button>
+      <button class="keypad-btn" onclick="appendToInput('5')">5</button>
+      <button class="keypad-btn" onclick="appendToInput('6')">6</button>
+      <button class="keypad-btn" onclick="appendToInput('7')">7</button>
+      <button class="keypad-btn" onclick="appendToInput('8')">8</button>
+      <button class="keypad-btn" onclick="appendToInput('9')">9</button>
+      <button class="keypad-btn" onclick="appendToInput('0')">0</button>
+      <button class="keypad-btn" onclick="clearInput()"><i class="fas fa-backspace"></i></button>
+      <button class="keypad-btn" onclick="submitInput()"><i class="fas fa-check"></i></button>
+    </div>
+
+    <div class="receipt" id="receipt">
+      <div class="receipt-header">صرافة شبكة</div>
+      <div class="receipt-line" id="receiptDate"></div>
+      <div class="receipt-line">---------------------</div>
+      <div class="receipt-line" id="receiptContent"></div>
+      <div class="receipt-line">---------------------</div>
+      <div class="receipt-footer">شكراً لاستخدامكم صرافة شبكة</div>
+    </div>
+  </div>
+
+  <script>
+    // حالة الصراف الآلي
+    const atmState = {
+      username: '',
+      pin: '',
+      balance: 1500.00,
+      currentScreen: 'login',
+      inputValue: '',
+      isAuthenticated: false
+    };
+
+    // أسعار صرف العملات
+    const exchangeRates = {
+      USD: 0.27,
+      EUR: 0.25,
+      JOD: 0.19
+    };
+
+    // عناصر DOM
+    const screenContent = document.getElementById('screenContent');
+    const keypad = document.getElementById('keypad');
+    const notification = document.getElementById('notification');
+    const receipt = document.getElementById('receipt');
+    const receiptContent = document.getElementById('receiptContent');
+    const receiptDate = document.getElementById('receiptDate');
+
+    // تهيئة الصراف الآلي
+    function initATM() {
+      showLoginScreen();
+    }
+
+    // عرض الإشعارات
+    function showNotification(message, isError = false) {
+      notification.textContent = message;
+      notification.style.display = 'block';
+      notification.style.background = isError ? 'var(--accent-gradient)' : 'var(--gradient)';
+      
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
+    }
+
+    // عرض شاشة تسجيل الدخول
+    function showLoginScreen() {
+      atmState.currentScreen = 'login';
+      screenContent.innerHTML = `
+        <div class="screen-title">تسجيل الدخول</div>
+        <div class="input-group">
+          <label class="input-label">اسم المستخدم:</label>
+          <input type="text" id="usernameInput" class="input-field" placeholder="أدخل اسم المستخدم">
+        </div>
+        <div class="input-group">
+          <label class="input-label">كلمة المرور:</label>
+          <input type="password" id="pinInput" class="input-field" placeholder="أدخل الرقم السري">
+        </div>
+        <button class="btn btn-primary" onclick="login()">
+          <i class="fas fa-sign-in-alt"></i> دخول
+        </button>
+      `;
+    }
+
+    // تسجيل الدخول
+    function login() {
+      const username = document.getElementById('usernameInput').value;
+      const pin = document.getElementById('pinInput').value;
+      
+      if (!username || !pin) {
+        showNotification('الرجاء إدخال اسم المستخدم والرقم السري', true);
+        return;
+      }
+      
+      if (username !== "user" || pin !== "1234") {
+        showNotification('بيانات الدخول غير صحيحة', true);
+        document.getElementById('pinInput').value = '';
+        return;
+      }
+      
+      atmState.isAuthenticated = true;
+      atmState.username = username;
+      showMainMenu();
+      showNotification('تم تسجيل الدخول بنجاح');
+    }
+
+    // عرض القائمة الرئيسية
+    function showMainMenu() {
+      atmState.currentScreen = 'menu';
+      screenContent.innerHTML = `
+        <div class="screen-title">القائمة الرئيسية</div>
+        <div class="btn-container">
+          <button class="btn btn-primary" onclick="checkBalance()">
+            <i class="fas fa-wallet"></i> عرض الرصيد
+          </button>
+          <button class="btn btn-primary" onclick="showDepositScreen()">
+            <i class="fas fa-money-bill-wave"></i> إيداع
+          </button>
+          <button class="btn btn-primary" onclick="showWithdrawScreen()">
+            <i class="fas fa-hand-holding-usd"></i> سحب
+          </button>
+          <button class="btn btn-primary" onclick="showCurrencyExchangeScreen()">
+            <i class="fas fa-exchange-alt"></i> تحويل عملة
+          </button>
+        </div>
+        <button class="btn btn-accent" onclick="logout()" style="margin-top: 1rem; width: 100%;">
+          <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+        </button>
+      `;
+    }
+
+    // عرض الرصيد
+    function checkBalance() {
+      atmState.currentScreen = 'balance';
+      screenContent.innerHTML = `
+        <div class="screen-title">رصيد الحساب</div>
+        <div class="screen-message">الرصيد الحالي:</div>
+        <div class="balance-amount">₪${atmState.balance.toFixed(2)}</div>
+        <button class="btn btn-secondary" onclick="printReceipt('رصيد الحساب', 'الرصيد الحالي: ₪${atmState.balance.toFixed(2)}')">
+          <i class="fas fa-print"></i> طباعة الإيصال
+        </button>
+        <button class="btn btn-primary" onclick="showMainMenu()">
+          <i class="fas fa-arrow-left"></i> العودة
+        </button>
+      `;
+    }
+
+    // عرض شاشة الإيداع
+    function showDepositScreen() {
+      atmState.currentScreen = 'deposit';
+      atmState.inputValue = '';
+      screenContent.innerHTML = `
+        <div class="screen-title">إيداع أموال</div>
+        <div class="screen-message">الرجاء إدخال المبلغ المطلوب إيداعه:</div>
+        <div class="input-group">
+          <input type="text" id="amountInput" class="input-field" placeholder="المبلغ بالشيكل" value="${atmState.inputValue}" readonly>
+        </div>
+        <div class="btn-container">
+          <button class="btn btn-primary" onclick="toggleKeypad()">
+            <i class="fas fa-keyboard"></i> لوحة المفاتيح
+          </button>
+          <button class="btn btn-accent" onclick="deposit()">
+            <i class="fas fa-check"></i> تأكيد
+          </button>
+        </div>
+        <button class="btn btn-secondary" onclick="showMainMenu()">
+          <i class="fas fa-arrow-left"></i> إلغاء
+        </button>
+      `;
+    }
+
+    // عملية الإيداع
+    function deposit() {
+      const amount = parseFloat(atmState.inputValue);
+      
+      if (isNaN(amount) || amount <= 0) {
+        showNotification('الرجاء إدخال مبلغ صحيح', true);
+        return;
+      }
+      
+      atmState.balance += amount;
+      showNotification(`تم إيداع ₪${amount.toFixed(2)} بنجاح`);
+      printReceipt('إيداع نقدي', `تم إيداع: ₪${amount.toFixed(2)}\nالرصيد الجديد: ₪${atmState.balance.toFixed(2)}`);
+      showMainMenu();
+    }
+
+    // عرض شاشة السحب
+    function showWithdrawScreen() {
+      atmState.currentScreen = 'withdraw';
+      atmState.inputValue = '';
+      screenContent.innerHTML = `
+        <div class="screen-title">سحب أموال</div>
+        <div class="screen-message">الرجاء إدخال المبلغ المطلوب سحبه:</div>
+        <div class="input-group">
+          <input type="text" id="amountInput" class="input-field" placeholder="المبلغ بالشيكل" value="${atmState.inputValue}" readonly>
+        </div>
+        <div class="btn-container">
+          <button class="btn btn-primary" onclick="toggleKeypad()">
+            <i class="fas fa-keyboard"></i> لوحة المفاتيح
+          </button>
+          <button class="btn btn-accent" onclick="withdraw()">
+            <i class="fas fa-check"></i> تأكيد
+          </button>
+        </div>
+        <button class="btn btn-secondary" onclick="showMainMenu()">
+          <i class="fas fa-arrow-left"></i> إلغاء
+        </button>
+      `;
+    }
+
+    // عملية السحب
+    function withdraw() {
+      const amount = parseFloat(atmState.inputValue);
+      
+      if (isNaN(amount) || amount <= 0) {
+        showNotification('الرجاء إدخال مبلغ صحيح', true);
+        return;
+      }
+      
+      if (amount > atmState.balance) {
+        showNotification('الرصيد غير كافي', true);
+        return;
+      }
+      
+      atmState.balance -= amount;
+      showNotification(`تم سحب ₪${amount.toFixed(2)} بنجاح`);
+      printReceipt('سحب نقدي', `تم سحب: ₪${amount.toFixed(2)}\nالرصيد الجديد: ₪${atmState.balance.toFixed(2)}`);
+      showMainMenu();
+    }
+
+    // عرض شاشة تحويل العملة
+    function showCurrencyExchangeScreen() {
+      atmState.currentScreen = 'exchange';
+      screenContent.innerHTML = `
+        <div class="screen-title">تحويل العملة</div>
+        <div class="screen-message">الرصيد الحالي: ₪${atmState.balance.toFixed(2)}</div>
+        <div class="btn-container">
+          <button class="btn btn-primary" onclick="convertCurrency('USD')">
+            <i class="fas fa-dollar-sign"></i> دولار أمريكي
+          </button>
+          <button class="btn btn-primary" onclick="convertCurrency('EUR')">
+            <i class="fas fa-euro-sign"></i> يورو
+          </button>
+          <button class="btn btn-primary" onclick="convertCurrency('JOD')">
+            <i class="fas fa-dinar"></i> دينار أردني
+          </button>
+        </div>
+        <button class="btn btn-secondary" onclick="showMainMenu()">
+          <i class="fas fa-arrow-left"></i> العودة
+        </button>
+      `;
+    }
+
+    // تحويل العملة
+    function convertCurrency(currency) {
+      let symbol, rate;
+      switch (currency) {
+        case 'USD':
+          symbol = '$';
+          rate = exchangeRates.USD;
+          break;
+        case 'EUR':
+          symbol = '€';
+          rate = exchangeRates.EUR;
+          break;
+        case 'JOD':
+          symbol = 'د.ا';
+          rate = exchangeRates.JOD;
+          break;
+      }
+      
+      const convertedAmount = (atmState.balance * rate).toFixed(2);
+      
+      screenContent.innerHTML = `
+        <div class="screen-title">تحويل العملة</div>
+        <div class="screen-message">سعر الصرف الحالي:</div>
+        <div class="currency-rate">
+          <span>₪1 = ${symbol}${rate.toFixed(2)}</span>
+        </div>
+        <div class="screen-message">الرصيد بالعملة المطلوبة:</div>
+        <div class="balance-amount">${symbol}${convertedAmount}</div>
+        <button class="btn btn-secondary" onclick="printReceipt('تحويل عملة', 
+          'الرصيد: ₪${atmState.balance.toFixed(2)}\nسعر الصرف: ₪1 = ${symbol}${rate.toFixed(2)}\nالمبلغ المحول: ${symbol}${convertedAmount}')">
+          <i class="fas fa-print"></i> طباعة الإيصال
+        </button>
+        <button class="btn btn-primary" onclick="showCurrencyExchangeScreen()">
+          <i class="fas fa-arrow-left"></i> العودة
+        </button>
+      `;
+    }
+
+    // تسجيل الخروج
+    function logout() {
+      atmState.isAuthenticated = false;
+      atmState.username = '';
+      atmState.pin = '';
+      showLoginScreen();
+      showNotification('تم تسجيل الخروج بنجاح');
+    }
+
+    // لوحة المفاتيح
+    function toggleKeypad() {
+      keypad.style.display = keypad.style.display === 'none' ? 'grid' : 'none';
+    }
+
+    function appendToInput(value) {
+      atmState.inputValue += value;
+      document.getElementById('amountInput').value = atmState.inputValue;
+    }
+
+    function clearInput() {
+      atmState.inputValue = '';
+      document.getElementById('amountInput').value = '';
+    }
+
+    function submitInput() {
+      keypad.style.display = 'none';
+    }
+
+    // طباعة الإيصال
+    function printReceipt(title, content) {
+      const now = new Date();
+      receiptDate.textContent = now.toLocaleString('ar-EG');
+      receiptContent.innerHTML = content.split('\n').map(line => `<div class="receipt-line">${line}</div>`).join('');
+      receipt.style.display = 'block';
+      
+      setTimeout(() => {
+        receipt.style.display = 'none';
+      }, 5000);
+    }
+
+    // بدء التشغيل
+    window.onload = initATM;
+  </script>
+</body>
+</html>
